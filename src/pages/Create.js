@@ -1,6 +1,6 @@
 import { Button, Container} from '@mui/material'
 import  Typography  from '@mui/material/Typography'
-import React from 'react'
+import React, {useEffect} from 'react'
 import { useState } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 import { makeStyles } from '@mui/styles';
@@ -10,7 +10,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
-
+import { useHistory } from 'react-router-dom';
 
 
 const useStyles = makeStyles({
@@ -24,14 +24,12 @@ const useStyles = makeStyles({
 
 export default function Notes() {
   const classes = useStyles('');
-
   const [title, setTitle] = useState('');
   const [details, setDetails] = useState('')
   const [titleError, setTitleError] = useState(false);
   const [detailsError, setDetailsError] = useState(false)
   const [category, setCategory] = useState('todos');
-
-
+  const history = useHistory();
 
 
   const handleSubmit = (e) => {
@@ -47,7 +45,13 @@ export default function Notes() {
     }
 
     if(title && details){
-      console.log(title,details,category)
+      fetch('http://localhost:8000/notes', {
+      method:'POST',
+      headers:{
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({title,details,category})
+      }).then(() => history.push(''))
     }
   }
 
@@ -102,6 +106,7 @@ export default function Notes() {
         <FormControlLabel value="work" control={<Radio />} label="Work" />
        </RadioGroup>
        </FormControl>
+       <br></br>
          
       <Button
         type="submit"
